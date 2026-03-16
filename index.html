@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Explorador de Estilos de Calculadora</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Estilos base para transiciones suaves entre temas */
+        body { transition: background-color 0.5s ease; }
+        .calc-container { transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
+        
+        /* 1. NEUMORPHISM: Basado en sombras suaves y relieve */
+        .theme-neumorphic {
+            background-color: #e0e5ec;
+            color: #444;
+        }
+        .theme-neumorphic .calc-body {
+            background: #e0e5ec;
+            border-radius: 30px;
+            box-shadow: 20px 20px 60px #bec3c9, -20px -20px 60px #ffffff;
+        }
+        .theme-neumorphic .btn-calc {
+            background: #e0e5ec;
+            box-shadow: 6px 6px 12px #bec3c9, -6px -6px 12px #ffffff;
+            border-radius: 12px;
+        }
+        .theme-neumorphic .btn-calc:active {
+            box-shadow: inset 4px 4px 8px #bec3c9, inset -4px -4px 8px #ffffff;
+        }
+
+        /* 2. CYBERPUNK: Luces neón y alto contraste */
+        .theme-cyberpunk {
+            background-color: #0d0221;
+            color: #00ff41;
+        }
+        .theme-cyberpunk .calc-body {
+            background: #0d0221;
+            border: 2px solid #ff00ff;
+            box-shadow: 0 0 15px #ff00ff, inset 0 0 10px #ff00ff;
+        }
+        .theme-cyberpunk .btn-calc {
+            background: #1a0842;
+            border: 1px solid #00ffff;
+            color: #00ffff;
+            text-shadow: 0 0 5px #00ffff;
+        }
+        .theme-cyberpunk .btn-calc:hover {
+            background: #00ffff;
+            color: #000;
+        }
+
+        /* 3. GLASSMORPHISM: Transparencias y desenfoque */
+        .theme-glass {
+            background: linear-gradient(45deg, #ff9a9e 0%, #fad0c4 99%, #fad0c4 100%);
+        }
+        .theme-glass .calc-body {
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 24px;
+        }
+        .theme-glass .btn-calc {
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        /* 4. MINIMALISTA (MAC): Limpio, bordes suaves, colores neutros */
+        .theme-minimal {
+            background-color: #f3f4f6;
+        }
+        .theme-minimal .calc-body {
+            background: #1c1c1c;
+            border-radius: 20px;
+            padding: 15px;
+        }
+        .theme-minimal .btn-calc {
+            background: #505050;
+            color: white;
+            border-radius: 50%;
+        }
+        .theme-minimal .btn-op {
+            background: #ff9f0a;
+        }
+    </style>
+</head>
+<body class="theme-neumorphic min-h-screen flex flex-col items-center justify-center p-4">
+
+    <!-- Selector de Temas -->
+    <div class="mb-10 flex flex-wrap justify-center gap-4 bg-white/20 p-2 rounded-full backdrop-blur-md">
+        <button onclick="changeTheme('neumorphic')" class="px-4 py-2 rounded-full bg-white text-gray-800 text-sm font-bold shadow-sm">Neumorfismo</button>
+        <button onclick="changeTheme('cyberpunk')" class="px-4 py-2 rounded-full bg-black text-cyan-400 text-sm font-bold shadow-sm">Cyberpunk</button>
+        <button onclick="changeTheme('glass')" class="px-4 py-2 rounded-full bg-white/50 text-pink-600 text-sm font-bold shadow-sm">Glassmorfismo</button>
+        <button onclick="changeTheme('minimal')" class="px-4 py-2 rounded-full bg-gray-800 text-white text-sm font-bold shadow-sm">Minimalista</button>
+    </div>
+
+    <!-- Contenedor de la Calculadora -->
+    <div class="calc-container w-full max-w-[320px]">
+        <div class="calc-body p-6 flex flex-col gap-4">
+            <!-- Pantalla -->
+            <div class="flex flex-col items-end justify-end h-20 px-2">
+                <div id="history" class="text-xs opacity-60 h-4"></div>
+                <div id="display" class="text-4xl font-light">0</div>
+            </div>
+
+            <!-- Botones -->
+            <div class="grid grid-cols-4 gap-3">
+                <button onclick="action('C')" class="btn-calc aspect-square flex items-center justify-center font-bold">C</button>
+                <button onclick="action('DEL')" class="btn-calc aspect-square flex items-center justify-center font-bold">←</button>
+                <button onclick="action('%')" class="btn-calc aspect-square flex items-center justify-center font-bold btn-op">%</button>
+                <button onclick="action('/')" class="btn-calc aspect-square flex items-center justify-center font-bold btn-op">÷</button>
+                
+                <button onclick="num('7')" class="btn-calc aspect-square flex items-center justify-center">7</button>
+                <button onclick="num('8')" class="btn-calc aspect-square flex items-center justify-center">8</button>
+                <button onclick="num('9')" class="btn-calc aspect-square flex items-center justify-center">9</button>
+                <button onclick="action('*')" class="btn-calc aspect-square flex items-center justify-center font-bold btn-op">×</button>
+                
+                <button onclick="num('4')" class="btn-calc aspect-square flex items-center justify-center">4</button>
+                <button onclick="num('5')" class="btn-calc aspect-square flex items-center justify-center">5</button>
+                <button onclick="num('6')" class="btn-calc aspect-square flex items-center justify-center">6</button>
+                <button onclick="action('-')" class="btn-calc aspect-square flex items-center justify-center font-bold btn-op">-</button>
+                
+                <button onclick="num('1')" class="btn-calc aspect-square flex items-center justify-center">1</button>
+                <button onclick="num('2')" class="btn-calc aspect-square flex items-center justify-center">2</button>
+                <button onclick="num('3')" class="btn-calc aspect-square flex items-center justify-center">3</button>
+                <button onclick="action('+')" class="btn-calc aspect-square flex items-center justify-center font-bold btn-op">+</button>
+                
+                <button onclick="num('0')" class="btn-calc col-span-2 rounded-full flex items-center justify-center">0</button>
+                <button onclick="num('.')" class="btn-calc aspect-square flex items-center justify-center">.</button>
+                <button onclick="calculate()" class="btn-calc aspect-square flex items-center justify-center font-bold btn-op">=</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const display = document.getElementById('display');
+        const history = document.getElementById('history');
+        let currentVal = '0';
+        let prevVal = '';
+        let operation = null;
+        let resetScreen = false;
+
+        function changeTheme(theme) {
+            document.body.className = 'min-h-screen flex flex-col items-center justify-center p-4 theme-' + theme;
+        }
+
+        function num(n) {
+            if (currentVal === '0' || resetScreen) {
+                currentVal = n;
+                resetScreen = false;
+            } else {
+                if (n === '.' && currentVal.includes('.')) return;
+                currentVal += n;
+            }
+            display.innerText = currentVal;
+        }
+
+        function action(op) {
+            if (op === 'C') {
+                currentVal = '0';
+                prevVal = '';
+                operation = null;
+                history.innerText = '';
+            } else if (op === 'DEL') {
+                currentVal = currentVal.length > 1 ? currentVal.slice(0, -1) : '0';
+            } else {
+                if (operation) calculate();
+                prevVal = currentVal;
+                operation = op;
+                history.innerText = prevVal + ' ' + op;
+                resetScreen = true;
+            }
+            display.innerText = currentVal;
+        }
+
+        function calculate() {
+            if (!operation || resetScreen) return;
+            let result;
+            const p = parseFloat(prevVal);
+            const c = parseFloat(currentVal);
+            
+            switch(operation) {
+                case '+': result = p + c; break;
+                case '-': result = p - c; break;
+                case '*': result = p * c; break;
+                case '/': result = p / c; break;
+                case '%': result = p % c; break;
+            }
+            
+            history.innerText = `${p} ${operation} ${c} =`;
+            currentVal = result.toString();
+            operation = null;
+            resetScreen = true;
+            display.innerText = currentVal;
+        }
+    </script>
+</body>
+</html>
